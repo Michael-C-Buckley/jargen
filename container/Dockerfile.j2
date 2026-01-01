@@ -1,7 +1,8 @@
 FROM alpine:latest
-RUN apk add bird
-COPY bird.conf /
-ENTRYPOINT ["bird", "-f"]
-CMD ["-c", "/bird.conf"]
+RUN apk add bird grep
+COPY bird.conf docker-entrypoint.sh /
+RUN chmod +x docker-entrypoint.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["bird", "-f", "-c", "/bird.conf"]
 EXPOSE 179/tcp
 LABEL bird.conf.hash={{ hash }}
