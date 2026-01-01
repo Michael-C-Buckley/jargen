@@ -4,7 +4,7 @@ from genconfig import platforms
 
 routes = []
 existingPrefixes = []
-desiredNumOfRoutes = 10
+desiredNumOfRoutes = 1000
 desiredPlatform = "junos"
 
 counter = 0
@@ -17,4 +17,5 @@ while counter < desiredNumOfRoutes:
 
 config = platforms[desiredPlatform](routes=routes)
 
-print(config)
+with open("output/config.txt", "w") as file:
+    file.write(config)
