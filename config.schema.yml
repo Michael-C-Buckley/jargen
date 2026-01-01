@@ -12,4 +12,5 @@ container:
       asn:
   rid:
   imageExportLocation:
+  comment:
 policy:

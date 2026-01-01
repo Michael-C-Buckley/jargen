@@ -1,0 +1,20 @@
+#!/bin/sh
+
+LINKS=$(ip link show | grep -Po "eth[0-9]*(?=[:@])")
+
+echo "--- Local BGP Box IP Addresses ---"
+
+echo $LINKS | while read link; do
+echo "IP Address on ${link}: $(ip addr show $link | grep -Po '(?<=inet6?\s).*?(?=\s)')";
+done;
+
+echo "--- Defined BGP Neighbors ---"
+NEIGHBORS=$(grep -Po "neighbor.*(?=;$)" /bird.conf)
+echo $NEIGHBORS | while read neighbor; do
+echo "Neighbor Address: $(echo ${neighbor} | awk '{print $2}'), Neighbor ASN: $(echo ${neighbor} | awk '{print $4}')";
+done
+
+echo "--- User Defined Attributes ---"
+echo "Comment: {{ comment }}"
+
+exec "$@"
