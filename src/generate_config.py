@@ -7,7 +7,7 @@ from collections import defaultdict
 from datetime import datetime
 
 def writeConfig(path: str, config: str, fileName: str = "config.txt") -> None:
-    with open(f"{path}/{fileName}") as file:
+    with open(f"{path}/{fileName}", "w") as file:
         file.write(config)
 
 def config_ios(routes: list[Route], path: str, localAS: int = None, vrf: str = "") -> None:
@@ -19,35 +19,35 @@ def config_ios(routes: list[Route], path: str, localAS: int = None, vrf: str = "
     # Identify routes with identical policy configurations
     routeDict = defaultdict(list)
     for route in routes:
-        routeDict[[route.aspath, route.communities, route.origin]].append(route.network)
+        routeDict[(" ".join(route.aspath), " ".join(route.communities), route.origin)].append(route.network)
     
     for index, value in enumerate(routeDict):
         prefixListName = f"ROUTEGEN-PL{index + 1}"
 
         for prefixIndex, prefixValue in enumerate(routeDict[value]):
-            config += f"ip prefix-list {prefixListName} seq {(prefixIndex + 1)} permit {prefixValue}"
+            config.append(f"ip prefix-list {prefixListName} seq {(prefixIndex + 1)} permit {prefixValue}")
         
-        config += f"route-map ROUTEGEN-RM permit {(index + 1)}"
-        config += f"  match ip address prefix-list {prefixListName}"
-        config += f"  set as-path prepend {" ".join(value[0])}" if value[0] else ""
-        config += f"  set community add {" ".join(value[1])}" if value[1] else ""
-        config += f"  set origin {value[2]}" if value[2] != "igp" else ""
+        config.append(f"route-map ROUTEGEN-RM permit {(index + 1)}")
+        config.append(f"  match ip address prefix-list {prefixListName}")
+        config.append(f"  set as-path prepend {value[0]}" if value[0] else "")
+        config.append(f"  set community add {value[1]}" if value[1] else "")
+        config.append(f"  set origin {value[2]}" if value[2] != "igp" else "")
 
         if localAS is not None:
-            config += f"router bgp {localAS}"
-            config += f"redistribute static route-map ROUTEGEN-RM"
-
-    writeConfig(path=path, config="\n".join(config))
+            config.append(f"router bgp {localAS}")
+            config.append(f"redistribute static route-map ROUTEGEN-RM")
+    
+    writeConfig(path=path, config="\n".join([x for x in config if x]))
 
 def config_junos(routes: list[Route], path: str, vrf: str = "", bgpGroup: str = None) -> None:
     config = []
     baseCommand = f"set routing-instances {vrf}" if vrf else "set"
-    baseRouteCommand = " ".join(baseCommand, "routing-options static route")
+    baseRouteCommand = " ".join([baseCommand, "routing-options static route"])
     for route in routes:
         command = f"{baseRouteCommand} {str(route.network)} discard"
         command += f" community [ {" ".join(route.communities)} ]" if route.communities else ""
         command += f" as-path path \"{" ".join(route.aspath)}\"" if route.aspath else ""
-        command += f" as-path origin {route.origin}" if route.origin else ""
+        command += f" as-path origin {route.origin}" if route.origin != "igp" else ""
         
         config.append(command)
     

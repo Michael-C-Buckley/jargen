@@ -19,7 +19,7 @@ def main() -> None:
             existingPrefixes.append(route.network)
             counter += 1
 
-    platforms[config["basic"]["platform"]](path=path.join(path.dirname(__file__), "container"), routes=routes)
+    platforms[config["basic"]["platform"]](path=path.join(path.dirname(__file__), "output"), routes=routes)
 
 if __name__ == "__main__":
     main()
