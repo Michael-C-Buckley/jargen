@@ -14,7 +14,14 @@ echo $NEIGHBORS | while read neighbor; do
 echo "Neighbor Address: $(echo ${neighbor} | awk '{print $2}'), Neighbor ASN: $(echo ${neighbor} | awk '{print $4}')";
 done
 
+echo "--- System Defined Attributes ---"
+{%- for attribute in sysAttributes %}
+echo "{{ attribute.name }}: {{ attribute.value }}"
+{%- endfor %}
+
 echo "--- User Defined Attributes ---"
-echo "Comment: {{ comment }}"
+{%- for attribute in userAttributes %}
+echo "{{ attribute.name }}: {{ attribute.value }}"
+{%- endfor %}
 
 exec "$@"

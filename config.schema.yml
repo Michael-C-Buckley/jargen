@@ -3,6 +3,7 @@ basic:
   desiredNumOfRoutes:
   configExportLocation:
   configFileName(?):
+
 container:
   localAS:
   neighbors:
@@ -12,5 +13,7 @@ container:
       asn:
   rid:
   imageExportLocation:
-  comment:
+  attributes:
+    - name: Comment
+      value: blank
 policy:

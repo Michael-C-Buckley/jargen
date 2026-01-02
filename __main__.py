@@ -2,27 +2,24 @@ import ipaddress as ip
 from src.generate_routes import generateRoutes
 from src.generate_config import platforms
 from os import path
+from yaml import safe_load
 
-def main():
+def main() -> None:
     routes = []
     existingPrefixes = []
-    desiredNumOfRoutes = 1000
-    desiredPlatform = "container"
+
+    with open("config.yml") as configFile:
+        config = safe_load(configFile)
 
     counter = 0
-    while counter < desiredNumOfRoutes:
+    while counter < config["basic"]["desiredNumOfRoutes"]:
         route = generateRoutes()
         if route.network not in existingPrefixes:
             routes.append(route)
             existingPrefixes.append(route.network)
             counter += 1
 
-    config = platforms[desiredPlatform](path=path.join(path.dirname(__file__), "container"), routes=routes)
-
-    print(config)
-
-    #with open("output/config.txt", "w") as file:
-    #    file.write(config)
+    platforms[config["basic"]["platform"]](path=path.join(path.dirname(__file__), "container"), routes=routes)
 
 if __name__ == "__main__":
     main()

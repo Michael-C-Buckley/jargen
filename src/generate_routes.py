@@ -1,22 +1,24 @@
 from ipaddress import IPv4Network, IPv4Address
 from random import randint
-from objects import Route
+from src.objects import Route
 
-def test_global(address: IPv4Address):
+def test_global(address: IPv4Address) -> bool:
     if not address.is_global:
         return False
     return True
 
-def runTests(address: IPv4Address):
-    enabledTests = [test_global]
+def runTests(address: IPv4Address) -> bool:
+    enabledTests = {
+        "Test to make sure that the address is a valid globally routable address": test_global
+    }
     for test in enabledTests:
-        if not test(address):
+        if not enabledTests[test](address):
             return False
     return True
 
-def generate_network():
+def generate_network() -> str:
     while True:
-        # Generate random IP address between 1.0.0.0 and 223.255.255.255 and make sure that it passes all defined tests
+        # Generate random IP address between 1.0.0.0 and 223.255.255.255 (0.0.0.0/8 = reserved, 224.0.0.0/4 = multicast, 240.0.0.0/4 = reserved) and make sure that it passes all defined tests
         address = IPv4Address(randint(16777216, 3758096383))
         if not runTests(address=address):
             continue
@@ -27,7 +29,7 @@ def generate_network():
 
         return f"{str(address)}/{prefixLength}"
     
-def generate_aspath(mode: str = "2byte", include_privateAS: bool = False, maxLength: int = 10):
+def generate_aspath(mode: str = "2byte", include_privateAS: bool = False, maxLength: int = 10) -> list[str]:
     # Generate random AS-PATH
     # Valid modes: 2byte, 4byte, 24byte
     aspath = []
@@ -56,7 +58,7 @@ def generate_aspath(mode: str = "2byte", include_privateAS: bool = False, maxLen
     
     return aspath
 
-def generateRoutes():
+def generateRoutes() -> Route:
     network = generate_network()
     aspath = generate_aspath()
     return Route(network=IPv4Network(network, strict=False), aspath=aspath)
