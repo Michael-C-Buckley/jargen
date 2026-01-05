@@ -1,7 +1,7 @@
 """Contains all the exceptions used by the package"""
-class TestFailed(Exception):
+class ConfigValidationTestFailedError(Exception):
     """Exception raised when a test fails"""
-    def __init__(self, message: str) -> None:
-        self.message = message
+    def __init__(self, test: str) -> None:
+        self.test = test
     def __str__(self) -> str:
-        return self.message
+        return f"Test failed during configuration validation: {self.test}"
