@@ -1,0 +1,135 @@
+basic:
+  platforms:
+    - ""
+  protocols:
+    - ""
+  addressFamily: ""
+  routeSource: ""
+  routeExport:
+    location: ""
+    fileName: ""
+
+mrt:
+  collector: ""
+
+prefixes:
+  quantity: 0
+  prefixLengthRanges:
+    - value: ""
+      probability: 0
+  routeSeed: ""
+  includePrivateSpace: True
+
+bgp:
+  aspath:
+    mode: ""
+    quantity:
+      - value: ""
+        probability: 0
+    includePrivateAS:
+      - value: bool
+        probability: 0
+  communities:
+    mode: ""
+    quantity:
+      - value: ""
+        probability: 0
+    includeWellKnown:
+      - value: True
+        probability: 0
+  nexthop:
+    - value: ""
+      probability: 0
+  origin:
+    - value: ""
+      probability: 0
+
+ospf:
+  routeType:
+    - value: ""
+      probability: 0
+  metricRanges:
+    - value: ""
+      probability: 0
+
+device:
+  configExport:
+    location: ""
+    fileName: ""
+  ios:
+    localAS: 0
+    vrf: ""
+    deployment:
+      address: ""
+  junos:
+    vrf: ""
+    bgpGroup: ""
+    deployment:
+      address: ""
+  bird:
+  frr:
+
+container:
+  imageExport:
+    location: ""
+    fileName: ""
+  configExport:
+    location: ""
+  bgp:
+    localAS: 0
+    rid: ""
+    neighbors:
+      - address: ""
+        asn: 0
+  ospf:
+    rid: ""
+    areaID: ""
+  networking:
+    mode: ""
+    static:
+      ipv4:
+        address: ""
+        gateway: ""
+      ipv6:
+        address: ""
+        gateway: ""
+  attributes:
+    - name: ""
+      value: ""
+
+policy:
+  constraints:
+    prefix:
+      action: ""
+      values:
+        - value: ""
+          probability: 0
+    bgp_aspath:
+      action: ""
+      values:
+        origin:
+          - value: ""
+            probability: 0
+        transit:
+          - value: ""
+            probability: 0
+    bgp_communities:
+      action: ""
+      values:
+        - value: ""
+          probability: 0
+    bgp_origin:
+      action: ""
+      values:
+        - value: ""
+          probability: 0
+
+  overrides:
+    - match:
+        - ""
+      except:
+        - ""
+      strict: True
+      attributes:
+        # all of the same attributes available under the top-level "prefixes", "bgp", and "ospf" configuration
+        # all constraints, EXCEPT prefix constraints, are also available
