@@ -1,6 +1,7 @@
 from yaml import safe_load, YAMLError
 from typing import Any
 
+
 def read_yaml(path: str) -> dict[str, Any]:
     try:
         with open(path) as file:

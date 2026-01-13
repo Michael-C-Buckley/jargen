@@ -1,7 +1,9 @@
 """Contains all functions needed when generating a route object, its associated network, and any associated path/route attributes"""
+
 from ipaddress import IPv4Network, IPv4Address
 from random import randint, choices
 from jargen.objects import Route
+
 
 # The tests are defined as such:
 # def test_{testname}(address: IPv4Address) -> bool
@@ -13,6 +15,7 @@ def test_global(address: IPv4Address) -> bool:
         return False
     return True
 
+
 def runTests(address: IPv4Address) -> bool:
     """Function to run the enabled tests and handle/raise failures/exceptions as required"""
     enabledTests = {
@@ -22,6 +25,7 @@ def runTests(address: IPv4Address) -> bool:
         if not enabledTests[test](address):
             return False
     return True
+
 
 def generate_network(minPL: int, maxPL: int) -> str:
     """Generate a randomized IPv4/IPv6 network, based on provided constraints in the configuration"""
@@ -34,7 +38,8 @@ def generate_network(minPL: int, maxPL: int) -> str:
         prefixLength = randint(minPL, maxPL)
 
         return f"{str(address)}/{prefixLength}"
-    
+
+
 def generate_aspath(mode: str, include_privateAS: bool, maxLength: int) -> list[str]:
     """Generate a random AS-PATH sequence containing 2 and/or 4-byte private and/or public ASNs, based on provided constraints in the configuration"""
     aspath = []
@@ -60,18 +65,21 @@ def generate_aspath(mode: str, include_privateAS: bool, maxLength: int) -> list[
 
     for i in range(randint(1, maxLength)):
         aspath.append(str(randint(minAS, maxAS)))
-    
+
     return aspath
+
 
 def generate_communities() -> list[str]:
     """Generate BGP communities for the route"""
     pass
+
 
 def generate_origin(probabilities: list[int]) -> str:
     """Randomly choose an origin code for the route based on the provided probabilities"""
     originCodes = ["igp", "egp", "incomplete"]
 
     return choices(originCodes)[0]
+
 
 def generateRoutes() -> Route:
     """Construct a route object"""
@@ -84,5 +92,5 @@ def generateRoutes() -> Route:
         network=IPv4Network(network, strict=False),
         aspath=aspath,
         communities=communities,
-        origin=origin
+        origin=origin,
     )
