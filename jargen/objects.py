@@ -9,7 +9,7 @@ class Route:
     def __init__(
         self,
         network: IPv4Network,
-        aspath: list[str] = [],
+        aspath: list[int] = [],
         origin: str = "igp",
         communities: list[str] = [],
     ):

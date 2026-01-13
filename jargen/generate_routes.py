@@ -1,7 +1,8 @@
 """Contains all functions needed when generating a route object, its associated network, and any associated path/route attributes"""
 
-from ipaddress import IPv4Network, IPv4Address
-from random import randint, choices
+from ipaddress import IPv4Address, IPv4Network
+from random import choices, randint
+
 from jargen.objects import Route
 
 
@@ -27,7 +28,7 @@ def runTests(address: IPv4Address) -> bool:
     return True
 
 
-def generate_network(minPL: int, maxPL: int) -> str:
+def generate_network(min_prefix_length: int = 8, max_prefix_length: int = 30) -> str:
     """Generate a randomized IPv4/IPv6 network, based on provided constraints in the configuration"""
     while True:
         # Generate random IP address between 1.0.0.0 and 223.255.255.255 (0.0.0.0/8 = reserved, 224.0.0.0/4 = multicast, 240.0.0.0/4 = reserved) and make sure that it passes all defined tests
@@ -35,14 +36,18 @@ def generate_network(minPL: int, maxPL: int) -> str:
         if not runTests(address=address):
             continue
 
-        prefixLength = randint(minPL, maxPL)
+        prefixLength = randint(min_prefix_length, max_prefix_length)
 
         return f"{str(address)}/{prefixLength}"
 
 
-def generate_aspath(mode: str, include_privateAS: bool, maxLength: int) -> list[str]:
+def generate_aspath(mode: str, include_privateAS: bool, maxLength: int) -> list[int]:
     """Generate a random AS-PATH sequence containing 2 and/or 4-byte private and/or public ASNs, based on provided constraints in the configuration"""
     aspath = []
+    minAS = -1
+    maxAS = -1
+
+    # TODO: implement mode enum
     match (mode, include_privateAS):
         case ("2byte", True):
             minAS = 1
@@ -63,15 +68,18 @@ def generate_aspath(mode: str, include_privateAS: bool, maxLength: int) -> list[
             minAS = 1
             maxAS = 4199999999
 
-    for i in range(randint(1, maxLength)):
-        aspath.append(str(randint(minAS, maxAS)))
+    # Prevent invalid cases
+    assert minAS != -1 and maxAS != -1
+
+    for _ in range(randint(1, maxLength)):
+        aspath.append(randint(minAS, maxAS))
 
     return aspath
 
 
 def generate_communities() -> list[str]:
     """Generate BGP communities for the route"""
-    pass
+    raise NotImplementedError("Generate communities is not yet implemented")
 
 
 def generate_origin(probabilities: list[int]) -> str:
@@ -83,10 +91,10 @@ def generate_origin(probabilities: list[int]) -> str:
 
 def generateRoutes() -> Route:
     """Construct a route object"""
-    network = generate_network()
-    aspath = generate_aspath()
+    network = generate_network(8, 30)
+    aspath = generate_aspath("2Byte", True, 10)
     communities = generate_communities()
-    origin = generate_origin()
+    origin = generate_origin(aspath)
 
     return Route(
         network=IPv4Network(network, strict=False),
