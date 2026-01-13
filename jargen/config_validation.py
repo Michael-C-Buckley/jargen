@@ -1,5 +1,5 @@
 from typing import Any, Callable
-from src.exceptions import ConfigValidationTestFailedError
+from jargen.exceptions import ConfigValidationTestFailedError
 from re import fullmatch
 
 # The tests are defined as such:

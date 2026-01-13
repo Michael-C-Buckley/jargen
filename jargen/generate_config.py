@@ -1,6 +1,6 @@
 """Contains all functions required to generate configuration for network devices/the routebox container"""
-from src.objects import Route, Neighbor
-from src.build_container import buildContainer
+from jargen.objects import Route, Neighbor
+from jargen.build_container import buildContainer
 from jinja2 import Environment, FileSystemLoader
 from ipaddress import IPv4Address
 from hashlib import sha256

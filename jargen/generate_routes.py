@@ -1,7 +1,7 @@
 """Contains all functions needed when generating a route object, its associated network, and any associated path/route attributes"""
 from ipaddress import IPv4Network, IPv4Address
 from random import randint, choices
-from src.objects import Route
+from jargen.objects import Route
 
 # The tests are defined as such:
 # def test_{testname}(address: IPv4Address) -> bool
