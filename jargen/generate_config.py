@@ -18,7 +18,7 @@ def writeConfig(path: str, config: str, fileName: str = "config.txt") -> None:
 
 
 def config_ios(
-    routes: list[Route], path: str, localAS: int = None, vrf: str = ""
+    routes: list[Route], path: str, localAS: int = -1, vrf: str = ""
 ) -> None:
     """Generate route/policy configurations for Cisco IOS and IOS-XE platforms"""
     config = []
@@ -51,7 +51,7 @@ def config_ios(
 
         if localAS > 0:
             config.append(f"router bgp {localAS}")
-            config.append(f"redistribute static route-map ROUTEGEN-RM")
+            config.append("redistribute static route-map ROUTEGEN-RM")
 
     writeConfig(path=path, config="\n".join([x for x in config if x]))
 
@@ -62,10 +62,11 @@ def config_iosxr():
 
 
 def config_junos(
-    routes: list[Route], path: str, vrf: str = "", bgpGroup: str = None
+    routes: list[Route], path: str, vrf: str = "", bgpGroup: str = ""
 ) -> None:
     """Generate route/policy configurations for Juniper Junos-based platforms"""
     config = []
+    command = ""
     baseCommand = f"set routing-instances {vrf}" if vrf else "set"
     baseRouteCommand = " ".join([baseCommand, "routing-options static route"])
     for route in routes:
@@ -82,7 +83,7 @@ def config_junos(
     config.append(f"{basePolicyCommand} from protocol static")
     config.append(f"{basePolicyCommand} then accept")
 
-    if bgpGroup is not None:
+    if bgpGroup:
         command += (
             f"{baseCommand} protocols bgp group {bgpGroup} export ROUTEGEN-POLICY"
         )
@@ -99,15 +100,15 @@ def config_container(
     userAttributes: dict[str, str],
 ) -> None:
     """Generate all required configuration to build the routebox container"""
-    templateLoader = lambda fileName: Environment(
-        loader=FileSystemLoader(path)
-    ).get_template(fileName)
 
-    birdTemplate = templateLoader("bird.conf.j2")
+    def load_template(filename: str):
+        return Environment(loader=FileSystemLoader(path)).get_template(filename)
+
+    birdTemplate = load_template("bird.conf.j2")
     birdContent = birdTemplate.render(rid=str(rid), routes=routes, neighbors=neighbors)
 
     birdContentHash = str(sha256(birdContent.encode("utf-8")).hexdigest())
-    dockerTemplate = templateLoader("Dockerfile.j2")
+    dockerTemplate = load_template("Dockerfile.j2")
     dockerContent = dockerTemplate.render(hash=birdContentHash)
 
     sysAttributes = {
@@ -119,7 +120,7 @@ def config_container(
         "Number of Neighbors": len(neighbors),
         "BGP Router ID": rid,
     }
-    entrypointTemplate = templateLoader("docker-entrypoint.sh.j2")
+    entrypointTemplate = load_template("docker-entrypoint.sh.j2")
     entrypointContent = entrypointTemplate.render(
         neighbors=neighbors, userAttributes=userAttributes, sysAttributes=sysAttributes
     )
