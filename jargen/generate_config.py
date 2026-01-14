@@ -3,7 +3,7 @@
 from collections import defaultdict
 from datetime import datetime
 from hashlib import sha256
-from ipaddress import IPv4Address
+from ipaddress import IPv4Address, IPv4Network
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -29,16 +29,16 @@ def config_ios(
         )
 
     # Identify routes with identical policy configurations
-    routeDict = defaultdict(list)
+    route_dict: defaultdict[tuple[str, str, str], list[IPv4Network]] = defaultdict(list)
     for route in routes:
-        routeDict[
+        route_dict[
             (" ".join(route.aspath_as_str), " ".join(route.communities), route.origin)
         ].append(route.network)
 
-    for index, value in enumerate(routeDict):
+    for index, value in enumerate(route_dict):
         prefixListName = f"ROUTEGEN-PL{index + 1}"
 
-        for prefixIndex, prefixValue in enumerate(routeDict[value]):
+        for prefixIndex, prefixValue in enumerate(route_dict[value]):
             config.append(
                 f"ip prefix-list {prefixListName} seq {(prefixIndex + 1)} permit {prefixValue}"
             )
