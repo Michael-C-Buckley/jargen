@@ -13,11 +13,14 @@ class Route:
         origin: str = "igp",
         communities: list[str] = [],
     ):
-        self.network = network
-        self.aspath = aspath
-        self.origin = origin
-        self.communities = communities
+        self.network: IPv4Network = network
+        self.aspath: list[int] = aspath
+        self.origin: str = origin
+        self.communities: list[str] = communities
 
+    @property
+    def aspath_as_str(self) -> list[str]:
+        return [str(i) for i in self.aspath]
 
 class Neighbor:
     """Object representing a BGP neighbor to be used in configuration generation"""

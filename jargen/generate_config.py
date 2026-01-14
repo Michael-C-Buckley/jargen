@@ -14,14 +14,14 @@ from jargen.objects import Neighbor, Route
 def writeConfig(path: str, config: str, fileName: str = "config.txt") -> None:
     """Simple function to export the generated configuration to a text file on disk"""
     with open(f"{path}/{fileName}", "w") as file:
-        file.write(config)
+        _ = file.write(config)
 
 
 def config_ios(
     routes: list[Route], path: str, localAS: int = -1, vrf: str = ""
 ) -> None:
     """Generate route/policy configurations for Cisco IOS and IOS-XE platforms"""
-    config = []
+    config: list[str] = []
     baseRouteCommand = f"ip route vrf {vrf}" if vrf else "ip route"
     for route in routes:
         config.append(
@@ -32,7 +32,7 @@ def config_ios(
     routeDict = defaultdict(list)
     for route in routes:
         routeDict[
-            (" ".join(route.aspath), " ".join(route.communities), route.origin)
+            (" ".join(route.aspath_as_str), " ".join(route.communities), route.origin)
         ].append(route.network)
 
     for index, value in enumerate(routeDict):
@@ -58,14 +58,14 @@ def config_ios(
 
 def config_iosxr():
     """Generate route/policy configuration for Cisco IOS-XR-based platforms"""
-    pass
+    raise NotImplementedError("IOS-XR configuration generation is not implemented yet.")
 
 
 def config_junos(
     routes: list[Route], path: str, vrf: str = "", bgpGroup: str = ""
 ) -> None:
     """Generate route/policy configurations for Juniper Junos-based platforms"""
-    config = []
+    config: list[str] = []
     command = ""
     baseCommand = f"set routing-instances {vrf}" if vrf else "set"
     baseRouteCommand = " ".join([baseCommand, "routing-options static route"])
@@ -74,7 +74,9 @@ def config_junos(
         command += (
             f" community [ {' '.join(route.communities)} ]" if route.communities else ""
         )
-        command += f' as-path path "{" ".join(route.aspath)}"' if route.aspath else ""
+        command += (
+            f' as-path path "{" ".join(route.aspath_as_str)}"' if route.aspath else ""
+        )
         command += f" as-path origin {route.origin}" if route.origin != "igp" else ""
 
         config.append(command)
@@ -127,13 +129,13 @@ def config_container(
 
     for item in [f"{path}/bird.conf", f"{path}/../output/{birdContentHash}.bird.conf"]:
         with open(item, "w") as file:
-            file.write(birdContent)
+            _ = file.write(birdContent)
 
     with open(f"{path}/docker-entrypoint.sh", "w") as file:
-        file.write(entrypointContent)
+        _ = file.write(entrypointContent)
 
     with open(f"{path}/Dockerfile", "w") as file:
-        file.write(dockerContent)
+        _ = file.write(dockerContent)
 
     buildContainer(
         dockerfilePath=f"{path}/Dockerfile",
