@@ -26,13 +26,13 @@ class Neighbor:
     """Object representing a BGP neighbor to be used in configuration generation"""
 
     def __init__(self, address: str, asn: int):
-        self.address = address
-        self.asn = asn
+        self.address: str = address
+        self.asn: int = asn
 
 
 class Attribute:
     """Object representing a custom key:value attribute to be used in configuration generation"""
 
     def __init__(self, name: str, value: str):
-        self.name = name
-        self.value = value
+        self.name: str = name
+        self.value: str = value
