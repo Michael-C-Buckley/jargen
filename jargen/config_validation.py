@@ -1,6 +1,7 @@
-from typing import Any, Callable
-from jargen.exceptions import ConfigValidationTestFailedError
 from re import fullmatch
+from typing import Any, Callable
+
+from jargen.exceptions import ConfigValidationTestFailedError
 
 # The tests are defined as such:
 # def validate_{topLevelConfig}(relevantConfig: {correct type}) -> bool:
@@ -86,7 +87,7 @@ def validate_basic(
     config: dict[str, Any], schema: dict[str, Any], types: dict[str, Any]
 ) -> bool:
     """Test to validate the configuration included in the basic top-level section"""
-    pass
+    raise NotImplementedError("validate_basic not yet implemented.")
 
 
 @validate_base("mrt")
@@ -94,7 +95,7 @@ def validate_mrt(
     config: dict[str, Any], schema: dict[str, Any], types: dict[str, Any]
 ) -> bool:
     """Test to validate the configuration included in the mrt top-level section"""
-    pass
+    raise NotImplementedError("validate_basic not yet implemented.")
 
 
 @validate_base("prefixes")
@@ -102,7 +103,7 @@ def validate_prefixes(
     config: dict[str, Any], schema: dict[str, Any], types: dict[str, Any]
 ) -> bool:
     """Test to validate the configuration included in the prefixes top-level section"""
-    pass
+    raise NotImplementedError("validate_basic not yet implemented.")
 
 
 @validate_base("bgp")
@@ -110,7 +111,7 @@ def validate_bgp(
     config: dict[str, Any], schema: dict[str, Any], types: dict[str, Any]
 ) -> bool:
     """Test to validate the configuration included in the bgp top-level section"""
-    pass
+    raise NotImplementedError("validate_basic not yet implemented.")
 
 
 @validate_base("ospf")
@@ -118,7 +119,7 @@ def validate_ospf(
     config: dict[str, Any], schema: dict[str, Any], types: dict[str, Any]
 ) -> bool:
     """Test to validate the configuration included in the ospf top-level section"""
-    pass
+    raise NotImplementedError("validate_basic not yet implemented.")
 
 
 @validate_base("device")
@@ -126,7 +127,7 @@ def validate_device(
     config: dict[str, Any], schema: dict[str, Any], types: dict[str, Any]
 ) -> bool:
     """Test to validate the configuration included in the device top-level section"""
-    pass
+    raise NotImplementedError("validate_basic not yet implemented.")
 
 
 @validate_base("container")
@@ -135,7 +136,7 @@ def validate_container(
 ) -> bool:
     """Test to validate the configuration included in the container top-level section"""
     # Validate that it is an eBGP peering
-    pass
+    raise NotImplementedError("validate_basic not yet implemented.")
 
 
 @validate_base("policy")
@@ -143,7 +144,7 @@ def validate_policy(
     config: dict[str, Any], schema: dict[str, Any], types: dict[str, Any]
 ) -> bool:
     """Test to validate the configuration included in the policy top-level section"""
-    pass
+    raise NotImplementedError("validate_basic not yet implemented.")
 
 
 def validateConfig(
